@@ -1,0 +1,218 @@
+----------------------------------------------近三个月
+function get3m(sender,isgc) 
+{ 
+  var myDate = new Date();
+  var yyy=myDate.getFullYear();    //获取完整的年份(4位,1970-????)
+  var mmm=myDate.getMonth()+1;       //获取当前月份(0-11,0代表1月)
+  var ddd=myDate.getDate(); 
+  var mydate1=new Date(yyy,mmm-3,ddd);
+
+  var endY=mydate1.getFullYear();
+  var endM=mydate1.getMonth()+1;
+  var endD=mydate1.getDate();
+  
+  ［开始日期］.SetVal(endY+'-'+endM+'-'+endD);
+  ［结束日期］.SetVal(yyy+'-'+mmm+'-'+ddd);
+
+}
+function get3m(sender,isgc) 
+{ 
+  
+	    var resultDate,year,month,date,hms;  
+	    var lastdate,year1,month1,date1; 
+       var currDate = new Date();  
+       
+       year = currDate.getFullYear();  
+       month = currDate.getMonth()+1;  
+       date = currDate.getDate();  
+       //hms = currDate.getHours() + ':' + currDate.getMinutes() + ':' + (currDate.getSeconds() < 10 ? '0'+currDate.getSeconds() : currDate.getSeconds());   
+       switch(month)  
+       {  
+            case 1:  
+            case 2:  
+            case 3:  
+                month += 9;  
+                year--;  
+                break;  
+            default:  
+                month -= 3;  
+                break;  
+       }  
+        month = (month < 10) ? ('0' + month) : month;  
+        date = (date < 10) ? ('0' + date) : date;
+          
+       resultDate = year + '-'+month+'-'+date;  
+           var currDate1 = new Date();  
+       
+       year1 = currDate1.getFullYear();  
+       month1 = currDate1.getMonth()+1;  
+       date1 = currDate1.getDate(); 
+       month1 = (month1 < 10) ? ('0' + month1) : month1;  
+        date1 = (date1 < 10) ? ('0' + date1) : date1;
+    lastdate = year1 + '-'+month1+'-'+date1;  
+  
+  ［开始日期］.SetVal(resultDate);
+  ［结束日期］.SetVal(lastdate);
+
+}
+
+-----------------------------------------本月
+function getmmm(sender,isgc) 
+{ 
+   var date=new Date;
+    //获得当前年分
+ 	var year=date.getFullYear(); 
+ 	//获得当前月份
+ 	var month=date.getMonth()+1;
+ 	month =(month<10 ? "0"+month:month); 
+ 	//获得当前月的最后一天
+ 	var  day = new Date(year,month,0);    
+	var lastdate = year + '-' + month + '-' + day.getDate();
+	//获得当前月的第一天
+	var firstdate = year + '-' + month + '-' +"01"; 
+ ［开始日期］.SetVal(firstdate);
+ ［结束日期］.SetVal(lastdate);
+}
+
+
+----------------------------------------------本年
+function getyear(sender,isgc) 
+{ 
+  var date=new Date;
+    //获得当前年分
+ 	var year=date.getFullYear(); 
+    
+	var lastdate = year + '-' + "12" + '-' +"31";
+	//获得当前月的第一天
+	var firstdate = year + '-' +"01"+ '-' +"01";
+	
+ 	//var myfirstday = (year.toString()+month.toString());
+ ［开始日期］.SetVal(firstdate);
+ ［结束日期］.SetVal(lastdate);
+}
+-----------------------------------------------近三年
+function last3year(sender,isgc) 
+{ 
+    var date=new Date;
+    //获得当前年分
+  var firstyear=date.getFullYear()-2; 
+    var lastyear=date.getFullYear();
+  var lastdate = lastyear + '-' + "12" + '-' +"31";
+  //获得当前月的第一天
+  var firstdate = firstyear + '-' +"01"+ '-' +"01";
+  
+  //var myfirstday = (year.toString()+month.toString());
+ ［开始日期］.SetVal(firstdate);
+ ［结束日期］.SetVal(lastdate);
+}
+----------------------------------------------上一年
+function lastyear(sender,isgc) 
+{ 
+   var date=new Date;
+    //获得当前年分
+  var year=date.getFullYear()-1; 
+    
+  var lastdate = year + '-' + "12" + '-' +"31";
+  //获得当前月的第一天
+  var firstdate = year + '-' +"01"+ '-' +"01";
+  
+  //var myfirstday = (year.toString()+month.toString());
+ ［开始日期］.SetVal(firstdate);
+ ［结束日期］.SetVal(lastdate);
+}各位，又到年底了，大家有两件事需要做一下：
+1.登录部门OA系统，把大家今年在每个项目上投入的工时和出差情况登记一下，便于项目核算；
+2.准备年终总结，虽然公司还没有通知，但是提前准备着吧。
+谢谢！
+
+
+http协议，css协议，各大知识体系。
+项目现已完成并通过最终检查。经我处审查，符合交验条件。请你站队该项目及时组织验收，同时将验收结果一试三份报我处
+
+
+账号密码都是tianyu.xing001
+http://sino-life.21tb.com/login/login.init.do?retu
+
+
+
+
+
+
+
+USE [SS_OA]
+GO
+/****** Object:  UserDefinedFunction [dbo].[GetCGNumber]    Script Date: 01/11/2018 13:52:17 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+
+ALTER function [dbo].[GetCGNumber]
+(
+
+)
+returns @tb table(	
+	超规号 numeric(18,0) NULL	
+)
+begin
+declare @iids varchar(max),@curiid varchar(50)
+DECLARE @PointerPrev int 
+ DECLARE @PointerCurr int 
+declare @count int
+select @count=COUNT(iid ) from UT_费用报销单
+ if @count>0
+ begin
+ set @iids=(SELECT distinct iids  FROM (
+			SELECT iid,(select convert(varchar(40), iid)+','  from UT_费用报销单 
+			 group by iid  FOR XML PATH('')) AS iids
+			FROM UT_费用报销单 where 超规号 is not null    GROUP BY iid) B) 
+    Set @PointerPrev=1 
+    while (@PointerPrev < LEN(@iids)) 
+    Begin 
+        Set @PointerCurr=CharIndex(',',@iids,@PointerPrev) 
+        if(@PointerCurr>0) 
+        Begin 
+            set @curiid=SUBSTRING(@iids,@PointerPrev,@PointerCurr-@PointerPrev)
+  
+    insert into @tb (超规号) select value as 超规号
+  from SplitToTable((SELECT 超规号 FROM dbo.UT_费用报销单 where iid=@curiid  ), ',') as a 
+    SET @PointerPrev = @PointerCurr+1 
+        End 
+        else 
+            Break 
+    End 
+end
+return
+
+
+declare @userid varchar(36)
+set @userid=  '6d695fe5-2ed2-4540-a0ad-04aef9105e65' 
+
+if @userid='17f60f16-93e0-4843-bcbb-c2b7c4686cab' 
+
+begin 
+SELECT   PARENT_ID,DOCTYPE_ID, DOCTYPE_NAME,  SORT 
+FROM         UT_MAN_采购类型  where DOCTYPE_NAME!='服务合同'
+end
+else
+begin
+SELECT   PARENT_ID,DOCTYPE_ID, DOCTYPE_NAME,  SORT 
+FROM         UT_MAN_采购类型   where DOCTYPE_NAME not in ('服务合同')
+end 
+https://pan.baidu.com/s/lcla3AQ
+D:\app\Administrator\product\11.2.0\client_1\bin\oci.dll
+
+
+if {Request【mode】}='select'
+begin 
+select a.IID,合同名称,合同编号,合同金额,rootiid,flowname,c.USERID from  XM_合同登记信息 a 
+ left join 自由分配表 b on a.IID=b.SUB_IID 
+ inner join ST_INSTANCE c on c.IID=b.rootiid
+where  flag='F982F7AC-5301-44D7-8FA6-67B1DFFC8B21'   {[查询占位参数]{【keywords】}} 
+end 
+else 
+begin
+select a.IID,合同名称,合同编号,合同金额,rootiid,flowname,c.USERID from  XM_合同登记信息 a 
+ left join 自由分配表 b on a.IID=b.SUB_IID 
+ inner join ST_INSTANCE c on c.IID=b.rootiid
+where  flag='F982F7AC-5301-44D7-8FA6-67B1DFFC8B21' and a.iid= {[业务编号]{iid}}   {[查询占位参数]{【keywords】}} 
